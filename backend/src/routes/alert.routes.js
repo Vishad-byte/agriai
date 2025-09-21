@@ -15,7 +15,7 @@ const router = express.Router();
 router.use(verifyJWT);
 
 // Alert routes
-router.route("/").post(createAlert);
+router.route("/create-alert").post(createAlert);
 router.route("/active").get(getActiveAlerts);
 router.route("/summary").get(getAlertSummary);
 router.route("/recent").get(getRecentAlerts);

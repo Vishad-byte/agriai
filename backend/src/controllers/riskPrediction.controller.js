@@ -23,13 +23,13 @@ const createRiskPrediction = asyncHandler(async (req, res) => {
     }
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const riskPrediction = await RiskPrediction.create({
-        fieldId,
+        fieldId: field._id,
         zoneId,
         riskLevel,
         riskType,
@@ -52,12 +52,12 @@ const getRiskPredictions = asyncHandler(async (req, res) => {
     const { riskLevel, riskType, timeHorizon, limit = 20 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
-    const filter = { fieldId, owner: req.user._id };
+    const filter = { fieldId: field._id, owner: req.user._id };
     if (riskLevel) filter.riskLevel = riskLevel;
     if (riskType) filter.riskType = riskType;
     if (timeHorizon) filter.timeHorizon = timeHorizon;
@@ -80,13 +80,13 @@ const getRiskZoneMap = asyncHandler(async (req, res) => {
     const { timeHorizon = '1week' } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const riskZones = await RiskPrediction.find({ 
-        fieldId, 
+        fieldId: field._id, 
         timeHorizon,
         owner: req.user._id 
     })
@@ -131,7 +131,7 @@ const getRiskSummary = asyncHandler(async (req, res) => {
     const { fieldId } = req.params;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
@@ -190,13 +190,13 @@ const getHighRiskZones = asyncHandler(async (req, res) => {
     const { limit = 10 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const highRiskZones = await RiskPrediction.find({ 
-        fieldId, 
+        fieldId: field._id, 
         riskLevel: 'high',
         owner: req.user._id 
     })
@@ -217,12 +217,12 @@ const getRiskRecommendations = asyncHandler(async (req, res) => {
     const { riskType, riskLevel } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
-    const filter = { fieldId, owner: req.user._id };
+    const filter = { fieldId: field._id, owner: req.user._id };
     if (riskType) filter.riskType = riskType;
     if (riskLevel) filter.riskLevel = riskLevel;
 

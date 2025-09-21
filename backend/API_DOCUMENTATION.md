@@ -51,7 +51,7 @@ Authorization: Bearer <access_token>
 - `GET /temporal-analysis/field/:fieldId/vegetation-moisture` - Get vegetation and moisture data
 
 ### Alerts
-- `POST /alerts` - Create new alert
+- `POST /alerts/create-alert` - Create new alert
 - `GET /alerts/active` - Get active alerts
 - `GET /alerts/summary` - Get alert summary statistics
 - `GET /alerts/recent` - Get recent alerts
@@ -59,14 +59,14 @@ Authorization: Bearer <access_token>
 - `PUT /alerts/:alertId/status` - Update alert status
 
 ### Soil Health
-- `POST /soil-health` - Create soil health data
+- `POST /soil-health/create-soil-data` - Create soil health data
 - `GET /soil-health/field/:fieldId/overview` - Get soil health overview
 - `GET /soil-health/field/:fieldId/zone/:zoneId` - Get soil health by zone
 - `GET /soil-health/field/:fieldId/summary` - Get soil health summary
 - `GET /soil-health/field/:fieldId/trends` - Get soil health trends
 
 ### Risk Predictions
-- `POST /risk-predictions` - Create risk prediction
+- `POST /risk-predictions/create-risk-prediction` - Create risk prediction
 - `GET /risk-predictions/field/:fieldId` - Get risk predictions for field
 - `GET /risk-predictions/field/:fieldId/map` - Get risk zone map
 - `GET /risk-predictions/field/:fieldId/summary` - Get risk summary
@@ -241,7 +241,7 @@ POST /api/v1/soil-health
 
 ### Create Alert
 ```bash
-POST /api/v1/alerts
+POST /api/v1/alerts/create-alert
 {
   "fieldId": "A-1",
   "zoneId": "A-3",
@@ -267,7 +267,7 @@ POST /api/v1/alerts
 
 ### Create Risk Prediction
 ```bash
-POST /api/v1/risk-predictions
+POST /api/v1/risk-predictions/create-risk-prediction
 {
   "fieldId": "B-1",
   "zoneId": "B-1",
@@ -365,3 +365,68 @@ Many endpoints support filtering with query parameters:
 - `riskLevel` - Filter by risk level
 - `alertType` - Filter by alert type
 - `period` - Filter by time period (6M, 1Y)
+
+## Complete Route Reference
+
+### Field Management Routes
+```
+POST   /api/v1/fields/create-field
+GET    /api/v1/fields/get-fields
+GET    /api/v1/fields/summary
+GET    /api/v1/fields/get-field-by-id/:fieldId
+PUT    /api/v1/fields/update-field/:fieldId
+DELETE /api/v1/fields/delete-field/:fieldId
+```
+
+### Spectral Health Routes
+```
+POST /api/v1/spectral-health/create-data
+GET  /api/v1/spectral-health/field/:fieldId/map
+GET  /api/v1/spectral-health/field/:fieldId/zone/:zoneId
+GET  /api/v1/spectral-health/field/:fieldId/summary
+PUT  /api/v1/spectral-health/update-data/:id
+```
+
+### Temporal Analysis Routes
+```
+POST /api/v1/temporal-analysis/create-temporal-data
+GET  /api/v1/temporal-analysis/field/:fieldId
+GET  /api/v1/temporal-analysis/field/:fieldId/trends
+GET  /api/v1/temporal-analysis/field/:fieldId/environmental
+GET  /api/v1/temporal-analysis/field/:fieldId/vegetation-moisture
+```
+
+### Alert Routes
+```
+POST /api/v1/alerts/create-alert
+GET  /api/v1/alerts/active
+GET  /api/v1/alerts/summary
+GET  /api/v1/alerts/recent
+GET  /api/v1/alerts/field/:fieldId
+PUT  /api/v1/alerts/:alertId/status
+```
+
+### Soil Health Routes
+```
+POST /api/v1/soil-health/create-soil-data
+GET  /api/v1/soil-health/field/:fieldId/overview
+GET  /api/v1/soil-health/field/:fieldId/zone/:zoneId
+GET  /api/v1/soil-health/field/:fieldId/summary
+GET  /api/v1/soil-health/field/:fieldId/trends
+```
+
+### Risk Prediction Routes
+```
+POST /api/v1/risk-predictions/create-risk-prediction
+GET  /api/v1/risk-predictions/field/:fieldId
+GET  /api/v1/risk-predictions/field/:fieldId/map
+GET  /api/v1/risk-predictions/field/:fieldId/summary
+GET  /api/v1/risk-predictions/field/:fieldId/high-risk
+GET  /api/v1/risk-predictions/field/:fieldId/recommendations
+```
+
+### Seed Data Routes
+```
+POST /api/v1/seed
+GET  /api/v1/seed/examples
+```

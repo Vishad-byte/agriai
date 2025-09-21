@@ -18,13 +18,13 @@ const createTemporalData = asyncHandler(async (req, res) => {
     }
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const temporalData = await TemporalAnalysis.create({
-        fieldId,
+        fieldId: field._id,
         period,
         vegetationHealth,
         moisture,
@@ -42,13 +42,13 @@ const getTemporalAnalysis = asyncHandler(async (req, res) => {
     const { period = '6M', limit = 12 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const temporalData = await TemporalAnalysis.find({ 
-        fieldId, 
+        fieldId: field._id, 
         period 
     })
     .sort({ measurementDate: -1 })
@@ -73,13 +73,13 @@ const getTemporalTrends = asyncHandler(async (req, res) => {
     const { period = '6M' } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const temporalData = await TemporalAnalysis.find({ 
-        fieldId, 
+        fieldId: field._id, 
         period 
     })
     .sort({ measurementDate: 1 });
@@ -117,13 +117,13 @@ const getEnvironmentalConditions = asyncHandler(async (req, res) => {
     const { period = '6M', limit = 12 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const environmentalData = await TemporalAnalysis.find({ 
-        fieldId, 
+        fieldId: field._id, 
         period 
     })
     .select('environmentalConditions measurementDate')
@@ -145,13 +145,13 @@ const getVegetationMoistureData = asyncHandler(async (req, res) => {
     const { period = '6M', limit = 12 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const vegetationMoistureData = await TemporalAnalysis.find({ 
-        fieldId, 
+        fieldId: field._id, 
         period 
     })
     .select('vegetationHealth moisture measurementDate')

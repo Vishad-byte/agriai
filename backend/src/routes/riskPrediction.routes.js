@@ -15,7 +15,7 @@ const router = express.Router();
 router.use(verifyJWT);
 
 // Risk Prediction routes
-router.route("/").post(createRiskPrediction);
+router.route("/create-risk-prediction").post(createRiskPrediction);
 router.route("/field/:fieldId").get(getRiskPredictions);
 router.route("/field/:fieldId/map").get(getRiskZoneMap);
 router.route("/field/:fieldId/summary").get(getRiskSummary);

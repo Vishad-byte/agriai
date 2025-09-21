@@ -14,7 +14,7 @@ const router = express.Router();
 router.use(verifyJWT);
 
 // Soil Health routes
-router.route("/").post(createSoilHealthData);
+router.route("/create-soil-data").post(createSoilHealthData);
 router.route("/field/:fieldId/overview").get(getSoilHealthOverview);
 router.route("/field/:fieldId/zone/:zoneId").get(getSoilHealthByZone);
 router.route("/field/:fieldId/summary").get(getSoilHealthSummary);

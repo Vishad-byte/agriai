@@ -23,7 +23,7 @@ const createSoilHealthData = asyncHandler(async (req, res) => {
     }
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
@@ -33,7 +33,7 @@ const createSoilHealthData = asyncHandler(async (req, res) => {
     const healthStatus = determineSoilHealthStatus(healthScore);
 
     const soilHealthData = await SoilHealth.create({
-        fieldId,
+        fieldId: field._id,
         zoneId,
         phLevel,
         moisture,
@@ -58,12 +58,12 @@ const getSoilHealthOverview = asyncHandler(async (req, res) => {
     const { limit = 10 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
-    const soilHealthData = await SoilHealth.find({ fieldId })
+    const soilHealthData = await SoilHealth.find({ fieldId: field._id })
         .sort({ measurementDate: -1 })
         .limit(parseInt(limit));
 
@@ -100,20 +100,22 @@ const getSoilHealthByZone = asyncHandler(async (req, res) => {
     const { limit = 5 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const soilHealthData = await SoilHealth.find({ 
-        fieldId, 
+        fieldId: field._id, 
         zoneId 
     })
     .sort({ measurementDate: -1 })
     .limit(parseInt(limit));
 
     if (soilHealthData.length === 0) {
-        throw new ApiError(404, "No soil health data found for this zone");
+        // Get available zones for this field to help with debugging
+        const availableZones = await SoilHealth.distinct('zoneId', { fieldId: field._id });
+        throw new ApiError(404, `No soil health data found for zone '${zoneId}'. Available zones for field '${fieldId}': ${availableZones.join(', ')}`);
     }
 
     return res
@@ -129,7 +131,7 @@ const getSoilHealthSummary = asyncHandler(async (req, res) => {
     const { fieldId } = req.params;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
@@ -181,12 +183,12 @@ const getSoilHealthTrends = asyncHandler(async (req, res) => {
     const { zoneId, days = 30 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
-    const filter = { fieldId };
+    const filter = { fieldId: field._id };
     if (zoneId) filter.zoneId = zoneId;
 
     const startDate = new Date();

@@ -21,13 +21,13 @@ const createAlert = asyncHandler(async (req, res) => {
     }
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const alert = await Alert.create({
-        fieldId,
+        fieldId: field._id,
         zoneId,
         alertType,
         severity,
@@ -82,13 +82,13 @@ const getAlertsByField = asyncHandler(async (req, res) => {
     const { status = 'active', limit = 10 } = req.query;
 
     // Verify field ownership
-    const field = await Field.findOne({ _id: fieldId, owner: req.user._id });
+    const field = await Field.findOne({ fieldId: fieldId, owner: req.user._id });
     if (!field) {
         throw new ApiError(404, "Field not found or access denied");
     }
 
     const alerts = await Alert.find({ 
-        fieldId, 
+        fieldId: field._id, 
         status,
         owner: req.user._id 
     })
